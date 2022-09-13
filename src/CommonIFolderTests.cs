@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace OwlCore.Storage.Tests.CommonTests;
+namespace OwlCore.Storage.CommonTests;
 
 public abstract class CommonIFolderTests
 {

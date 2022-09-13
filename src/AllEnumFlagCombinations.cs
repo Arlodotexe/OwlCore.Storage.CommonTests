@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace OwlCore.Storage.Tests.CommonTests
+namespace OwlCore.Storage.CommonTests
 {
     public class AllEnumFlagCombinationsAttribute : Attribute, ITestDataSource
     {
