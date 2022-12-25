@@ -18,11 +18,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore
-
     - name: Build
-      run: dotnet build --no-restore -p:Configuration=Release
+      run: dotnet build /r /p:Configuration="Release" /p:Platform="Any CPU"
 
     - name: Publish to NuGet
       run: dotnet nuget push "/home/runner/work/OwlCore.Storage.CommonTests/OwlCore.Storage.CommonTests/src/bin/Release/OwlCore.Storage.CommonTests.*.*.*.nupkg" --skip-duplicate --api-key ${{secrets.NUGET_KEY}} --source https://api.nuget.org/v3/index.json
