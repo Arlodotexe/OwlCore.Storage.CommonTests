@@ -40,7 +40,7 @@ public abstract class IModifiableFolderTests : CommonIFolderTests
 
         var newFirstItem = await folder.GetItemsAsync().FirstAsync();
 
-        Assert.AreNotSame(firstItem, newFirstItem);
+        Assert.IsFalse(ReferenceEquals(firstItem, newFirstItem));
     }
 
     [TestMethod]
