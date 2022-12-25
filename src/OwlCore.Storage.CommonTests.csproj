@@ -14,13 +14,16 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.1.0</Version>
+		<Version>0.2.0</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.2.0 ---
+Added CommonIModifiableFolderTests.
+
 --- 0.1.0 ---
 [Breaking]
 Fixed the namespace for CommonIFileTests and CommonIFolderTests. They now reside under OwlCore.Storage.CommonTests, instead of OwlCore.Storage.Tests.CommonTests.
@@ -58,7 +61,7 @@ Initial release of OwlCore.Storage.CommonTests.
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="OwlCore.Extensions" Version="0.3.0" />
 		<PackageReference Include="OwlCore.Storage" Version="0.5.0" />
