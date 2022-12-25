@@ -14,14 +14,22 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.2.0</Version>
+		<Version>0.2.1</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.2.1 ---
+[Improvements]
+Updated all NuGet package dependencies. Fixes an issue where tests decorated with DataRowAttribute weren't visible to consuming projects.
+
+[Fix]
+Fixed a test failure caused by usage of the method Assert.AreSame().
+
 --- 0.2.0 ---
+[New]
 Added CommonIModifiableFolderTests.
 
 --- 0.1.0 ---
@@ -63,13 +71,13 @@ Initial release of OwlCore.Storage.CommonTests.
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="OwlCore.Extensions" Version="0.3.0" />
-		<PackageReference Include="OwlCore.Storage" Version="0.5.0" />
+		<PackageReference Include="OwlCore.Extensions" Version="0.4.0" />
+		<PackageReference Include="OwlCore.Storage" Version="0.5.1" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.0.1" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
