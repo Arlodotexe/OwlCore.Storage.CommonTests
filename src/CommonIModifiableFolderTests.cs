@@ -44,6 +44,16 @@ public abstract class IModifiableFolderTests : CommonIFolderTests
     }
 
     [TestMethod]
+    public async Task DeleteAsyncSubfolderWithItems()
+    {
+        var folder = await CreateModifiableFolderWithItems(1, 2);
+        var subFolder = await folder.GetFoldersAsync().FirstAsync();
+
+        await ((IModifiableFolder)subFolder).CreateFileAsync("TestFile");
+        await folder.DeleteAsync(subFolder);
+    }
+
+    [TestMethod]
     public async Task CreateCopyOfAsyncTest()
     {
         var sourceFolder = await CreateModifiableFolderWithItems(1, 0);

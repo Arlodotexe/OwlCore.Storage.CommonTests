@@ -14,13 +14,17 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.2.1</Version>
+		<Version>0.2.2</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-		<PackageIcon>logo.png</PackageIcon>
+		<PackageIcon>logo.png</on>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.2.2 ---
+[New]
+Added new unit test for IModifiableFolder to make sure a subfolder with items doesn't throw when deleted.
+
 --- 0.2.1 ---
 [Improvements]
 Updated all NuGet package dependencies. Fixes an issue where tests decorated with DataRowAttribute weren't visible to consuming projects.
