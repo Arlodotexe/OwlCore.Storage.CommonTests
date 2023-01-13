@@ -18,7 +18,7 @@
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-		<PackageIcon>logo.png</on>
+		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
 --- 0.2.2 ---
