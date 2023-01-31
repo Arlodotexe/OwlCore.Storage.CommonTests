@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace OwlCore.Storage.CommonTests;
 
-public abstract class IModifiableFolderTests : CommonIFolderTests
+public abstract class CommonIModifiableFolderTests : CommonIFolderTests
 {
     /// <summary>
     /// Creates a folder with items in it.

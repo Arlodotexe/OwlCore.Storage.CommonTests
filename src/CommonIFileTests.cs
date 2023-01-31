@@ -10,10 +10,15 @@ namespace OwlCore.Storage.CommonTests
     public abstract class CommonIFileTests
     {
         /// <summary>
+        /// Gets a boolean that indicates if the file support writing to the underlying stream.
+        /// </summary>
+        public virtual bool SupportsWriting => true;
+
+        /// <summary>
         /// Call the constructor using valid input parameters.
         /// </summary>
         public abstract Task<IFile> CreateFileAsync();
-        
+
         [TestMethod]
         public Task ConstructorCall_ValidParameters()
         {
@@ -28,7 +33,7 @@ namespace OwlCore.Storage.CommonTests
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(file.Id));
         }
-        
+
         [TestMethod]
         [AllEnumFlagCombinations(typeof(FileAccess))]
         public async Task OpenStreamAndTryEachAccessMode(FileAccess accessMode)
@@ -41,20 +46,30 @@ namespace OwlCore.Storage.CommonTests
                 return;
             }
 
+            // Don't test writing if not supported.
+            if (!SupportsWriting)
+                accessMode ^= FileAccess.Write;
+
+            // If removing write access resulted in empty flag.
+            if (accessMode == 0)
+                return;
+
             using var stream = await file.OpenStreamAsync(accessMode);
 
             if (accessMode.HasFlag(FileAccess.Read))
             {
-                var bytes = await stream.ToBytesAsync();
-                Assert.AreEqual(stream.Length, bytes.Length);
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+
+                Assert.AreNotEqual(0, memoryStream.ToArray().Length);
             }
 
-            if (accessMode.HasFlag(FileAccess.Write))
+            if (accessMode.HasFlag(FileAccess.Write) && SupportsWriting)
             {
                 stream.WriteByte(0);
             }
         }
-        
+
         [TestMethod]
         [AllEnumFlagCombinations(typeof(FileAccess))]
         public async Task OpenStreamWithEachAccessModeAndCancelToken(FileAccess accessMode)

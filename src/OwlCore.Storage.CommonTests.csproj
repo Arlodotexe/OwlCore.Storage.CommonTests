@@ -14,13 +14,23 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.2.3</Version>
+		<Version>0.3.0</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.3.0 ---
+[Breaking]
+Renamed IModifiableFolderTests to CommonIModifiableFolderTests. This was a typo and has been corrected.
+
+[Improvements]
+Added CommonIFileTests.SupportsWriting boolean to handle testing read-only file sources.
+
+[Fixes]
+Fixed crashing file tests for implementations that return a stream which that doesn't support checking the position property.
+
 --- 0.2.3 ---
 [Improvements]
 Updated all NuGet package dependencies for upstream bug fixes.
@@ -33,7 +43,7 @@ Added new unit test for IModifiableFolder to make sure a subfolder with items do
 [Improvements]
 Updated all NuGet package dependencies. Fixes an issue where tests decorated with DataRowAttribute weren't visible to consuming projects.
 
-[Fix]
+[Fixes]
 Fixed a test failure caused by usage of the method Assert.AreSame().
 
 --- 0.2.0 ---
