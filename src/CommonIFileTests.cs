@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OwlCore.Extensions;
 
 namespace OwlCore.Storage.CommonTests
 {
