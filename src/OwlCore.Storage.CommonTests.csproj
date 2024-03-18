@@ -14,13 +14,17 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.5.0</Version>
+		<Version>0.5.1</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.5.1 ---
+[Improvements]
+Added detailed error messages for why CommonIModifiableFolder tests fail and where to check your code for issues.
+
 --- 0.5.0 ---
 [Breaking]
 Inherited breaking changes and adjusts tests for OwlCore.Storage 0.10.0.
