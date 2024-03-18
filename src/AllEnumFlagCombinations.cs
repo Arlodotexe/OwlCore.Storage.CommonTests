@@ -13,7 +13,7 @@ namespace OwlCore.Storage.CommonTests
         public AllEnumFlagCombinationsAttribute(Type type)
         {
             if (type is null || !type.IsEnum)
-                throw new InvalidOperationException($"Type {type} is null or not an enum");
+                throw new InvalidOperationException($"Type {type} is null or not an enum.");
 
             _type = type;
         }
@@ -33,7 +33,7 @@ namespace OwlCore.Storage.CommonTests
         private static IEnumerable<object> GetAllValues(Type type)
         {
             if (!type.IsEnum)
-                throw new ArgumentException("Generic argument is not an enumeration type");
+                throw new ArgumentException("Generic argument is not an enumeration type.");
 
             var maxEnumValue = (1 << Enum.GetValues(type).Length - 1);
             return Enumerable.Range(0, maxEnumValue)

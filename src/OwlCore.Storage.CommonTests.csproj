@@ -14,13 +14,20 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.4.1</Version>
+		<Version>0.5.0</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.5.0 ---
+[Breaking]
+Inherited breaking changes and adjusts tests for OwlCore.Storage 0.10.0.
+
+[Fixes]
+Fixes an issue with CommonIModifiableFolderTests where Move wasn't being tested properly.
+
 --- 0.4.1 ---
 [Fixes]
 Inherited fixes from OwlCore.Storage 0.8.2.
@@ -95,15 +102,15 @@ Initial release of OwlCore.Storage.CommonTests.
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-		<PackageReference Include="OwlCore.Extensions" Version="0.5.0" />
-		<PackageReference Include="OwlCore.Storage" Version="0.8.2" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="OwlCore.Extensions" Version="0.7.0" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
-		<PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
-		<PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.2.2" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.2.2" />
+		<PackageReference Include="OwlCore.Storage" Version="0.10.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -67,28 +67,34 @@ public abstract class CommonIModifiableFolderTests : CommonIFolderTests
         var copy = await destinationFolder.CreateCopyOfAsync(originalFile, overwrite: true);
 
         // Read copy
-        using var copyStream = await copy.OpenStreamAsync();
+        using var copyStream = await copy.OpenReadAsync();
         var copiedBytes = await copyStream.ToBytesAsync();
         CollectionAssert.AreEqual(randomBytesAddedToOriginalFile, copiedBytes);
 
-        // Change the contents of the copy
-        // Allows us to check if the contents were successfully copied to another place.
-        copyStream.Dispose();
-        var copyNewBytes = await CopyRandomBytesToAsync(copy);
-
-        // If the file existed before we copied and we chose not to overwrite it, the "copy" operation turns into an "open" operation.
-        var noOverwriteCopy = await sourceFolder.CreateCopyOfAsync(copy, overwrite: false);
-        using var noOverwriteCopyStream = await noOverwriteCopy.OpenStreamAsync();
-        var noOverwriteCopyBytes = await noOverwriteCopyStream.ToBytesAsync();
-
-        // Make sure the new bytes weren't copied.
-        CollectionAssert.AreNotEqual(copyNewBytes, noOverwriteCopyBytes);
+        // If the file already exists, and we chose not to overwrite it, a "FileAlreadyExistsException" should throw.
+        await Assert.ThrowsExceptionAsync<FileAlreadyExistsException>(async () => await destinationFolder.CreateCopyOfAsync(copy, overwrite: false), $"If an item of the same name already exists in the destination folder, {nameof(FileAlreadyExistsException)} should be thrown.");
     }
 
     [TestMethod]
     public async Task MoveFromAsyncTest()
     {
+        var sourceFolder = await CreateModifiableFolderWithItems(1, 0);
+        var destinationFolder = await CreateModifiableFolderWithItems(1, 0);
 
+        // Copy random bytes to original file
+        var originalFile = await sourceFolder.GetFilesAsync().FirstAsync();
+        var randomBytesAddedToOriginalFile = await CopyRandomBytesToAsync(originalFile);
+
+        // Create copy
+        var copy = await destinationFolder.MoveFromAsync(originalFile, sourceFolder, overwrite: true);
+
+        // Read copy
+        using var copyStream = await copy.OpenReadAsync();
+        var copiedBytes = await copyStream.ToBytesAsync();
+        CollectionAssert.AreEqual(randomBytesAddedToOriginalFile, copiedBytes);
+
+        // If the file already exists, and we chose not to overwrite it, a "FileAlreadyExistsException" should throw.
+        await Assert.ThrowsExceptionAsync<FileAlreadyExistsException>(async () => await destinationFolder.MoveFromAsync(copy, sourceFolder, overwrite: false), $"If an item of the same name already exists in the destination folder, {nameof(FileAlreadyExistsException)} should be thrown.");
     }
 
     [DataRow(0, 0)]
@@ -184,7 +190,7 @@ public abstract class CommonIModifiableFolderTests : CommonIFolderTests
         var uniqueContent = await CopyRandomBytesToAsync(originalFile);
 
         var createdFile = await sourceFolder.CreateFileAsync(originalFile.Name, overwrite: false);
-        using var createdFileStream = await createdFile.OpenStreamAsync();
+        using var createdFileStream = await createdFile.OpenReadAsync();
         var createdFileBytes = await createdFileStream.ToBytesAsync();
 
         // Make sure the unique content still exists.
@@ -208,7 +214,7 @@ public abstract class CommonIModifiableFolderTests : CommonIFolderTests
         var uniqueContent = await CopyRandomBytesToAsync(originalFile);
 
         var createdFile = await sourceFolder.CreateFileAsync(originalFile.Name, overwrite: true);
-        using var createdFileStream = await createdFile.OpenStreamAsync();
+        using var createdFileStream = await createdFile.OpenReadAsync();
         var createdFileBytes = await createdFileStream.ToBytesAsync();
 
         // Make sure the unique content doesn't exists.
