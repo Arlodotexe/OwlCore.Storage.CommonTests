@@ -88,7 +88,17 @@ namespace OwlCore.Storage.CommonTests
 
             cancellationTokenSource.Cancel();
 
-            await Assert.ThrowsExceptionAsync<OperationCanceledException>(() => file.OpenStreamAsync(accessMode, cancellationTokenSource.Token));
+            await Assert.ThrowsExceptionAsync<OperationCanceledException>(async () =>
+            {
+                try
+                {
+                    await file.OpenStreamAsync(accessMode, cancellationTokenSource.Token);
+                }
+                catch (TaskCanceledException e)
+                {
+                    throw new OperationCanceledException(e.Message);
+                }
+            });
         }
     }
 
