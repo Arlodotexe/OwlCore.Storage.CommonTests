@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<Nullable>enable</Nullable>
@@ -14,13 +14,17 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.5.1</Version>
+		<Version>0.5.2</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.5.2 ---
+[Fix]
+Fixed an issue where Assert.ThrowsException explicitly checks for an OperationCanceledException, not the exceptions that derive from it. Some libraries throw a TaskCanceledException instead of an OperationCanceledException, which may cause issues with tests.
+
 --- 0.5.1 ---
 [Improvements]
 Added detailed error messages for why CommonIModifiableFolder tests fail and where to check your code for issues.
