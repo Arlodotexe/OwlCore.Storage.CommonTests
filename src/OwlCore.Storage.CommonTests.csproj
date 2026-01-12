@@ -118,7 +118,7 @@ Initial release of OwlCore.Storage.CommonTests.
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 		<PackageReference Include="MSTest.TestAdapter" Version="3.2.2" />
 		<PackageReference Include="MSTest.TestFramework" Version="3.2.2" />
-		<PackageReference Include="OwlCore.Storage" Version="0.10.0" />
+		<PackageReference Include="OwlCore.Storage" Version="0.15.0" />
 	</ItemGroup>
 
 	<ItemGroup>

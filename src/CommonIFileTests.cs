@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace OwlCore.Storage.CommonTests
 {
-    public abstract class CommonIFileTests
+    public abstract partial class CommonIFileTests
     {
         /// <summary>
         /// Gets a boolean that indicates if the file support writing to the underlying stream.

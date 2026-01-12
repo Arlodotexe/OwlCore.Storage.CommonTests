@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace OwlCore.Storage.CommonTests;
 
-public abstract class CommonIFolderTests
+public abstract partial class CommonIFolderTests
 {
     /// <summary>
     /// Call the constructor using valid input parameters.
