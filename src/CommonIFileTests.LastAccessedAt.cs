@@ -39,8 +39,8 @@ public abstract partial class CommonIFileTests
         var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        await Assert.ThrowsExceptionAsync<OperationCanceledException>(async () =>
-            await lastAccessedAt.LastAccessedAt.GetValueAsync(cts.Token));
+        Assert.ThrowsException<OperationCanceledException>(() =>
+            lastAccessedAt.LastAccessedAt.GetValueAsync(cts.Token));
     }
 
     [TestMethod]
@@ -109,7 +109,7 @@ public abstract partial class CommonIFileTests
         var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        await Assert.ThrowsExceptionAsync<OperationCanceledException>(async () =>
-            await prop.UpdateValueAsync(DateTime.Now, cts.Token));
+        Assert.ThrowsException<OperationCanceledException>(() =>
+            prop.UpdateValueAsync(DateTime.Now, cts.Token));
     }
 }

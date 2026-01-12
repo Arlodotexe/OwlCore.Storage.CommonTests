@@ -39,8 +39,8 @@ public abstract partial class CommonIFolderTests
         var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        await Assert.ThrowsExceptionAsync<OperationCanceledException>(async () =>
-            await createdAt.CreatedAt.GetValueAsync(cts.Token));
+        Assert.ThrowsException<OperationCanceledException>(() =>
+            createdAt.CreatedAt.GetValueAsync(cts.Token));
     }
 
     [TestMethod]
@@ -109,7 +109,7 @@ public abstract partial class CommonIFolderTests
         var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        await Assert.ThrowsExceptionAsync<OperationCanceledException>(async () =>
-            await prop.UpdateValueAsync(DateTime.Now, cts.Token));
+        Assert.ThrowsException<OperationCanceledException>(() =>
+            prop.UpdateValueAsync(DateTime.Now, cts.Token));
     }
 }
