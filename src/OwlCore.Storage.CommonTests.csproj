@@ -14,7 +14,7 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.5.2</Version>
+		<Version>0.6.0</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -112,13 +112,11 @@ Initial release of OwlCore.Storage.CommonTests.
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="OwlCore.Extensions" Version="0.7.0" />
+		<PackageReference Include="OwlCore.Extensions" Version="0.10.0" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-		<PackageReference Include="MSTest.TestAdapter" Version="3.2.2" />
-		<PackageReference Include="MSTest.TestFramework" Version="3.2.2" />
-		<PackageReference Include="OwlCore.Storage" Version="0.10.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
+		<PackageReference Include="OwlCore.Storage" Version="0.15.0" />
 	</ItemGroup>
 
 	<ItemGroup>
