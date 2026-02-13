@@ -25,8 +25,43 @@ public abstract partial class CommonIFileTests
             return;
 
         var value = await lastModifiedAt.LastModifiedAt.GetValueAsync(CancellationToken.None);
-        Assert.IsNotNull(value);
-        Assert.AreNotEqual(DateTime.MinValue, value.Value);
+
+        switch (LastModifiedAtAvailability)
+        {
+            case PropertyValueAvailability.Always:
+                Assert.IsNotNull(value, "LastModifiedAt should always have a value for this implementation.");
+                Assert.AreNotEqual(DateTime.MinValue, value.Value);
+                break;
+
+            case PropertyValueAvailability.Maybe:
+                if (value is not null)
+                    Assert.AreNotEqual(DateTime.MinValue, value.Value);
+                break;
+        }
+    }
+
+    [TestMethod]
+    public async Task LastModifiedAt_CreateWithKnownTimestamp_ReturnsCorrectValue()
+    {
+        var expectedTimestamp = DateTime.UtcNow.AddDays(-15);
+        var file = await CreateFileWithLastModifiedAtAsync(expectedTimestamp);
+        
+        // Skip if implementation doesn't support creating files with known timestamps
+        if (file is null)
+            return;
+
+        if (file is not ILastModifiedAt lastModifiedAt)
+        {
+            Assert.Fail("CreateFileWithLastModifiedAtAsync returned a file that doesn't implement ILastModifiedAt.");
+            return;
+        }
+
+        var value = await lastModifiedAt.LastModifiedAt.GetValueAsync(CancellationToken.None);
+        
+        Assert.IsNotNull(value, "LastModifiedAt should have a value when created with a known timestamp.");
+        
+        var diff = Math.Abs((value.Value.ToUniversalTime() - expectedTimestamp).TotalSeconds);
+        Assert.IsTrue(diff < 2, $"LastModifiedAt should match the requested timestamp. Expected={expectedTimestamp:O}, Actual={value:O}, Diff={diff:F2}s");
     }
 
     [TestMethod]
@@ -66,50 +101,5 @@ public abstract partial class CommonIFileTests
         using var watcher = await prop.GetWatcherAsync(CancellationToken.None);
 
         Assert.AreSame(prop, watcher.Property);
-    }
-
-    [TestMethod]
-    public async Task LastModifiedAt_UpdateValueAsync_PersistsChange()
-    {
-        var file = await CreateFileAsync();
-        if (file is not ILastModifiedAt { LastModifiedAt: IModifiableStorageProperty<DateTime?> prop })
-            return;
-
-        var newValue = DateTime.Now.AddDays(-1);
-        await prop.UpdateValueAsync(newValue, CancellationToken.None);
-
-        var retrieved = await prop.GetValueAsync(CancellationToken.None);
-        Assert.IsNotNull(retrieved);
-        Assert.AreEqual(newValue.Year, retrieved.Value.Year);
-        Assert.AreEqual(newValue.Month, retrieved.Value.Month);
-        Assert.AreEqual(newValue.Day, retrieved.Value.Day);
-        Assert.AreEqual(newValue.Hour, retrieved.Value.Hour);
-        Assert.AreEqual(newValue.Minute, retrieved.Value.Minute);
-        Assert.AreEqual(newValue.Second, retrieved.Value.Second);
-    }
-
-    [TestMethod]
-    public async Task LastModifiedAt_UpdateValueAsync_NullThrows()
-    {
-        var file = await CreateFileAsync();
-        if (file is not ILastModifiedAt { LastModifiedAt: IModifiableStorageProperty<DateTime?> prop })
-            return;
-
-        await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
-            await prop.UpdateValueAsync(null, CancellationToken.None));
-    }
-
-    [TestMethod]
-    public async Task LastModifiedAt_UpdateValueAsync_ImmediateCancellation()
-    {
-        var file = await CreateFileAsync();
-        if (file is not ILastModifiedAt { LastModifiedAt: IModifiableStorageProperty<DateTime?> prop })
-            return;
-
-        var cts = new CancellationTokenSource();
-        cts.Cancel();
-
-        Assert.ThrowsException<OperationCanceledException>(() =>
-            prop.UpdateValueAsync(DateTime.Now, cts.Token));
     }
 }

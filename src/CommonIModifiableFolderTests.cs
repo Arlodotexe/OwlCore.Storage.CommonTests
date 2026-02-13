@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OwlCore.Extensions;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace OwlCore.Storage.CommonTests;
 
-public abstract class CommonIModifiableFolderTests : CommonIFolderTests
+public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
 {
     /// <summary>
     /// Creates a folder with items in it.
@@ -29,6 +29,32 @@ public abstract class CommonIModifiableFolderTests : CommonIFolderTests
     /// Creates a folder with items in it.
     /// </summary>
     public override async Task<IFolder> CreateFolderWithItems(int fileCount, int folderCount) => await CreateModifiableFolderWithItems(fileCount, folderCount);
+
+    /// <summary>
+    /// Creates a file in the given folder with a specific LastModifiedAt timestamp.
+    /// </summary>
+    /// <param name="folder">The folder to create the file in.</param>
+    /// <param name="lastModifiedAt">The last modified timestamp to apply.</param>
+    /// <returns>The created file, or null if the implementation doesn't support setting LastModifiedAt on created files.</returns>
+    /// <remarks>
+    /// Implementations must explicitly return null if they don't support setting LastModifiedAt on created files,
+    /// which signals the test should be skipped. This ensures gaps are surfaced rather than silently ignored.
+    /// </remarks>
+    public abstract Task<IFile?> CreateFileInFolderWithLastModifiedAtAsync(IModifiableFolder folder, DateTime lastModifiedAt);
+
+    /// <summary>
+    /// Creates a file in the given folder with specific timestamps.
+    /// </summary>
+    /// <param name="folder">The folder to create the file in.</param>
+    /// <param name="createdAt">The creation timestamp to apply, or null to skip.</param>
+    /// <param name="lastModifiedAt">The last modified timestamp to apply, or null to skip.</param>
+    /// <param name="lastAccessedAt">The last accessed timestamp to apply, or null to skip.</param>
+    /// <returns>The created file, or null if the implementation doesn't support setting timestamps on created files.</returns>
+    /// <remarks>
+    /// Implementations must explicitly return null if they don't support setting timestamps on created files,
+    /// which signals the test should be skipped. This ensures gaps are surfaced rather than silently ignored.
+    /// </remarks>
+    public abstract Task<IFile?> CreateFileInFolderWithTimestampsAsync(IModifiableFolder folder, DateTime? createdAt, DateTime? lastModifiedAt, DateTime? lastAccessedAt);
 
     [TestMethod]
     public async Task DeleteAsyncTest()

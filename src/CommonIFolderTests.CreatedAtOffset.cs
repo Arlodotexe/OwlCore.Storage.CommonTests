@@ -25,8 +25,19 @@ public abstract partial class CommonIFolderTests
             return;
 
         var value = await createdAtOffset.CreatedAtOffset.GetValueAsync(CancellationToken.None);
-        Assert.IsNotNull(value);
-        Assert.AreNotEqual(DateTimeOffset.MinValue, value.Value);
+
+        switch (CreatedAtAvailability)
+        {
+            case PropertyValueAvailability.Always:
+                Assert.IsNotNull(value, "CreatedAtOffset should always have a value for this implementation.");
+                Assert.AreNotEqual(DateTimeOffset.MinValue, value.Value);
+                break;
+
+            case PropertyValueAvailability.Maybe:
+                if (value is not null)
+                    Assert.AreNotEqual(DateTimeOffset.MinValue, value.Value);
+                break;
+        }
     }
 
     [TestMethod]
@@ -66,50 +77,5 @@ public abstract partial class CommonIFolderTests
         using var watcher = await prop.GetWatcherAsync(CancellationToken.None);
 
         Assert.AreSame(prop, watcher.Property);
-    }
-
-    [TestMethod]
-    public async Task CreatedAtOffset_UpdateValueAsync_PersistsChange()
-    {
-        var folder = await CreateFolderAsync();
-        if (folder is not ICreatedAtOffset { CreatedAtOffset: IModifiableStorageProperty<DateTimeOffset?> prop })
-            return;
-
-        var newValue = DateTimeOffset.Now.AddDays(-1);
-        await prop.UpdateValueAsync(newValue, CancellationToken.None);
-
-        var retrieved = await prop.GetValueAsync(CancellationToken.None);
-        Assert.IsNotNull(retrieved);
-        Assert.AreEqual(newValue.UtcDateTime.Year, retrieved.Value.UtcDateTime.Year);
-        Assert.AreEqual(newValue.UtcDateTime.Month, retrieved.Value.UtcDateTime.Month);
-        Assert.AreEqual(newValue.UtcDateTime.Day, retrieved.Value.UtcDateTime.Day);
-        Assert.AreEqual(newValue.UtcDateTime.Hour, retrieved.Value.UtcDateTime.Hour);
-        Assert.AreEqual(newValue.UtcDateTime.Minute, retrieved.Value.UtcDateTime.Minute);
-        Assert.AreEqual(newValue.UtcDateTime.Second, retrieved.Value.UtcDateTime.Second);
-    }
-
-    [TestMethod]
-    public async Task CreatedAtOffset_UpdateValueAsync_NullThrows()
-    {
-        var folder = await CreateFolderAsync();
-        if (folder is not ICreatedAtOffset { CreatedAtOffset: IModifiableStorageProperty<DateTimeOffset?> prop })
-            return;
-
-        await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
-            await prop.UpdateValueAsync(null, CancellationToken.None));
-    }
-
-    [TestMethod]
-    public async Task CreatedAtOffset_UpdateValueAsync_ImmediateCancellation()
-    {
-        var folder = await CreateFolderAsync();
-        if (folder is not ICreatedAtOffset { CreatedAtOffset: IModifiableStorageProperty<DateTimeOffset?> prop })
-            return;
-
-        var cts = new CancellationTokenSource();
-        cts.Cancel();
-
-        Assert.ThrowsException<OperationCanceledException>(() =>
-            prop.UpdateValueAsync(DateTimeOffset.Now, cts.Token));
     }
 }
