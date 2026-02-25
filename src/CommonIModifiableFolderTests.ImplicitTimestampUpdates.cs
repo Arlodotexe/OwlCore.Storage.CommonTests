@@ -415,9 +415,59 @@ public abstract partial class CommonIModifiableFolderTests
     }
 
     /// <summary>
+    /// Tests that LastAccessedAt is updated when the file is opened, not when it is closed.
+    /// </summary>
+    [TestMethod]
+    public async Task OpenFileWrite_UpdatesLastAccessedAt_AtOpenTime()
+    {
+        if (LastAccessedAtUpdateBehavior == PropertyUpdateBehavior.Never)
+            return;
+
+        var folder = await CreateModifiableFolderWithItems(1, 0);
+        var file = await folder.GetFilesAsync().FirstAsync();
+
+        if (file is not ILastAccessedAt lastAccessedAtFile)
+            return;
+
+        // Set LastAccessedAt to the past
+        var oldLastAccessedAt = DateTime.UtcNow.AddDays(-7);
+        if (lastAccessedAtFile.LastAccessedAt is IModifiableStorageProperty<DateTime?> modifiableProp)
+        {
+            try { await modifiableProp.UpdateValueAsync(oldLastAccessedAt, CancellationToken.None); }
+            catch { return; }
+        }
+        else
+        {
+            return;
+        }
+
+        var before = await lastAccessedAtFile.LastAccessedAt.GetValueAsync(CancellationToken.None);
+
+        // Open the stream but do NOT dispose it yet
+        var stream = await file.OpenWriteAsync();
+        await stream.WriteAsync(new byte[] { 0x42 }, 0, 1);
+
+        // Check atime BEFORE disposal — it should already be updated at open time
+        var duringOpen = await lastAccessedAtFile.LastAccessedAt.GetValueAsync(CancellationToken.None);
+
+        stream.Dispose();
+
+        switch (LastAccessedAtUpdateBehavior)
+        {
+            case PropertyUpdateBehavior.Immediate:
+                Assert.IsTrue(!AreTimestampsEqual(before, duringOpen),
+                    $"LastAccessedAt should update when the file is opened, before the stream is disposed. Before={before:O}, DuringOpen={duringOpen:O}");
+                break;
+
+            case PropertyUpdateBehavior.Eventual:
+                break;
+        }
+    }
+
+    /// <summary>
     /// Compares two DateTime values with tolerance for filesystem precision differences.
     /// </summary>
-    private static bool AreTimestampsEqual(DateTime? source, DateTime? dest)
+    protected static bool AreTimestampsEqual(DateTime? source, DateTime? dest)
     {
         if (source is null || dest is null)
             return false;

@@ -120,10 +120,11 @@ public abstract partial class CommonIModifiableFolderTests
         var expectedLastAccessedAt = DateTime.UtcNow.AddDays(-7);
         
         // Create source file with known timestamps
-        var sourceFile = await CreateFileInFolderWithTimestampsAsync(sourceFolder, expectedCreatedAt, expectedLastModifiedAt, expectedLastAccessedAt);
+        var createdFileData = await CreateFileInFolderWithTimestampsAsync(sourceFolder, expectedCreatedAt, expectedLastModifiedAt, expectedLastAccessedAt);
+        var sourceFile = createdFileData?.CreatedFile;
         
         // Skip if implementation doesn't support creating files with known timestamps
-        if (sourceFile is null)
+        if (createdFileData is null)
             return;
 
         if (sourceFile is not IChildFile childFile)
@@ -140,11 +141,13 @@ public abstract partial class CommonIModifiableFolderTests
         var mockMoved = (MockStorageFile)moved;
 
         // Check each timestamp - only assert if source had it
-        if (sourceFile is ICreatedAt)
+        if (sourceFile is ICreatedAt && createdFileData?.CreatedAt is not null)
             AssertTimestampPreservedUtc(expectedCreatedAt, mockMoved.CreatedAtValue?.UtcDateTime, "CreatedAt");
-        if (sourceFile is ILastModifiedAt)
+        
+        if (sourceFile is ILastModifiedAt && createdFileData?.LastModifiedAt is not null)
             AssertTimestampPreservedUtc(expectedLastModifiedAt, mockMoved.LastModifiedAtValue?.UtcDateTime, "LastModifiedAt");
-        if (sourceFile is ILastAccessedAt)
+
+        if (sourceFile is ILastAccessedAt && createdFileData?.LastAccessedAt is not null)
             AssertTimestampPreservedUtc(expectedLastAccessedAt, mockMoved.LastAccessedAtValue?.UtcDateTime, "LastAccessedAt");
 
         // Source should be deleted

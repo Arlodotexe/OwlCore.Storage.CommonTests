@@ -26,10 +26,11 @@ public abstract partial class CommonIModifiableFolderTests
         var oldLastModifiedAt = DateTime.UtcNow.AddDays(-15);
         var oldLastAccessedAt = DateTime.UtcNow.AddDays(-7);
 
-        var originalFile = await CreateFileInFolderWithTimestampsAsync(sourceFolder, oldCreatedAt, oldLastModifiedAt, oldLastAccessedAt);
+        var createdFileData = await CreateFileInFolderWithTimestampsAsync(sourceFolder, oldCreatedAt, oldLastModifiedAt, oldLastAccessedAt);
+        var originalFile = createdFileData?.CreatedFile;
 
         // If implementation can't create files with timestamps, nothing to test
-        if (originalFile is null)
+        if (createdFileData is null || originalFile is null)
             return;
 
         // Capture source properties
@@ -37,13 +38,13 @@ public abstract partial class CommonIModifiableFolderTests
         DateTime? sourceLastModifiedAt = null;
         DateTime? sourceLastAccessedAt = null;
 
-        if (originalFile is ICreatedAt createdAt)
+        if (originalFile is ICreatedAt createdAt && createdFileData?.CreatedAt is not null)
             sourceCreatedAt = await createdAt.CreatedAt.GetValueAsync(CancellationToken.None);
         
-        if (originalFile is ILastModifiedAt lastModifiedAt)
+        if (originalFile is ILastModifiedAt lastModifiedAt && createdFileData?.LastModifiedAt is not null)
             sourceLastModifiedAt = await lastModifiedAt.LastModifiedAt.GetValueAsync(CancellationToken.None);
         
-        if (originalFile is ILastAccessedAt lastAccessedAt)
+        if (originalFile is ILastAccessedAt lastAccessedAt && createdFileData?.LastAccessedAt is not null)
             sourceLastAccessedAt = await lastAccessedAt.LastAccessedAt.GetValueAsync(CancellationToken.None);
 
         // If no properties are implemented, nothing to test
@@ -95,10 +96,11 @@ public abstract partial class CommonIModifiableFolderTests
         var oldLastModifiedAt = DateTime.UtcNow.AddDays(-15);
         var oldLastAccessedAt = DateTime.UtcNow.AddDays(-7);
 
-        var originalFile = await CreateFileInFolderWithTimestampsAsync(sourceFolder, oldCreatedAt, oldLastModifiedAt, oldLastAccessedAt) as IChildFile;
+        var createdFileData = await CreateFileInFolderWithTimestampsAsync(sourceFolder, oldCreatedAt, oldLastModifiedAt, oldLastAccessedAt);
+        var originalFile = createdFileData?.CreatedFile;
 
         // If implementation can't create files with timestamps, nothing to test
-        if (originalFile is null)
+        if (createdFileData is null || originalFile is null)
             return;
 
         // Capture source properties
@@ -106,13 +108,13 @@ public abstract partial class CommonIModifiableFolderTests
         DateTime? sourceLastModifiedAt = null;
         DateTime? sourceLastAccessedAt = null;
 
-        if (originalFile is ICreatedAt createdAt)
+        if (originalFile is ICreatedAt createdAt && createdFileData?.CreatedAt is not null)
             sourceCreatedAt = await createdAt.CreatedAt.GetValueAsync(CancellationToken.None);
         
-        if (originalFile is ILastModifiedAt lastModifiedAt)
+        if (originalFile is ILastModifiedAt lastModifiedAt && createdFileData?.LastModifiedAt is not null)
             sourceLastModifiedAt = await lastModifiedAt.LastModifiedAt.GetValueAsync(CancellationToken.None);
         
-        if (originalFile is ILastAccessedAt lastAccessedAt)
+        if (originalFile is ILastAccessedAt lastAccessedAt && createdFileData?.LastAccessedAt is not null)
             sourceLastAccessedAt = await lastAccessedAt.LastAccessedAt.GetValueAsync(CancellationToken.None);
 
         // If no properties are implemented, nothing to test
@@ -120,7 +122,7 @@ public abstract partial class CommonIModifiableFolderTests
             return;
 
         // Perform move
-        var moved = await destinationFolder.MoveFromAsync(originalFile, sourceFolder, overwrite: true);
+        var moved = await destinationFolder.MoveFromAsync((IChildFile)originalFile, sourceFolder, overwrite: true);
 
         // Assert move semantics: ALL timestamps should be preserved
 

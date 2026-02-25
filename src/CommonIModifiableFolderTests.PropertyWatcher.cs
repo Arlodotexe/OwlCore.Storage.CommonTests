@@ -105,6 +105,9 @@ public abstract partial class CommonIModifiableFolderTests
     [TestMethod]
     public async Task PropertyWatcher_ValueUpdated_FiresOnContentChange()
     {
+        if (LastModifiedAtUpdateBehavior == PropertyUpdateBehavior.Never)
+            return;
+
         var folder = await CreateModifiableFolderWithItems(1, 0);
         var file = await folder.GetFilesAsync().FirstAsync();
 
@@ -125,11 +128,13 @@ public abstract partial class CommonIModifiableFolderTests
             var originalValue = await mutableProp.GetValueAsync(CancellationToken.None);
 
             // Modify file content (should update LastModifiedAt)
-            using (var stream = await file.OpenStreamAsync(FileAccess.Write, CancellationToken.None))
-            {
-                var data = Encoding.UTF8.GetBytes("Modified content at " + DateTime.UtcNow);
-                await stream.WriteAsync(data, 0, data.Length);
-            }
+            var stream = await file.OpenStreamAsync(FileAccess.Write, CancellationToken.None);
+
+            var data = Encoding.UTF8.GetBytes("Modified content at " + DateTime.UtcNow);
+
+            await stream.WriteAsync(data, 0, data.Length);
+
+            stream.Dispose();
 
             // Wait for event or timeout
             var timeoutTask = Task.Delay(3000);
@@ -139,7 +144,18 @@ public abstract partial class CommonIModifiableFolderTests
 
             var reportedValue = await eventFired.Task;
             Assert.IsNotNull(reportedValue, "ValueUpdated should provide the new value");
-            Assert.IsTrue(reportedValue > originalValue, "LastModifiedAt should be newer after content change");
+
+            
+        switch (LastModifiedAtUpdateBehavior)
+        {
+            case PropertyUpdateBehavior.Immediate:
+                Assert.IsTrue(reportedValue > originalValue, $"LastModifiedAt should be newer after content change, ID {file.Id}");
+                break;
+
+            case PropertyUpdateBehavior.Eventual:
+                // For eventual updates, we can't strictly assert
+                break;
+        }
         }
         finally
         {
@@ -236,14 +252,14 @@ public abstract partial class CommonIModifiableFolderTests
     public async Task PropertyWatcher_CrossInstance_Notification()
     {
         var folder = await CreateModifiableFolderWithItems(1, 0);
-        
+
         // Get the file twice, creating two separate "instances" representing the same resource
         var fileInstance1 = await folder.GetFilesAsync().FirstAsync();
         var fileInstance2 = await folder.GetFilesAsync().FirstAsync();
 
         if (fileInstance1 is not ILastModifiedAt { LastModifiedAt: IMutableStorageProperty<DateTime?> mutableProp1 })
             return;
-            
+
         if (fileInstance2 is not ILastModifiedAt { LastModifiedAt: IModifiableStorageProperty<DateTime?> modifiableProp2 })
             return;
 
@@ -267,7 +283,7 @@ public abstract partial class CommonIModifiableFolderTests
             await Task.WhenAny(eventFired.Task, timeoutTask);
 
             Assert.IsTrue(eventFired.Task.IsCompleted, "Watcher on separate instance should receive ValueUpdated");
-            
+
             var reportedValue = await eventFired.Task;
             Assert.IsNotNull(reportedValue, "ValueUpdated should provide the new value");
             Assert.IsTrue(Math.Abs((reportedValue.Value.ToUniversalTime() - newTime).TotalSeconds) < 2,

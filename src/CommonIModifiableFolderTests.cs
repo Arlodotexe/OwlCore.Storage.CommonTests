@@ -54,7 +54,18 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
     /// Implementations must explicitly return null if they don't support setting timestamps on created files,
     /// which signals the test should be skipped. This ensures gaps are surfaced rather than silently ignored.
     /// </remarks>
-    public abstract Task<IFile?> CreateFileInFolderWithTimestampsAsync(IModifiableFolder folder, DateTime? createdAt, DateTime? lastModifiedAt, DateTime? lastAccessedAt);
+    public abstract Task<CommonIModifiableFolderTests.CreateFileInFolderWithTimestampsResult?> CreateFileInFolderWithTimestampsAsync(IModifiableFolder folder, DateTime? createdAt, DateTime? lastModifiedAt, DateTime? lastAccessedAt);
+
+    public record CreateFileInFolderWithTimestampsResult(IFile? CreatedFile, DateTime? CreatedAt = null, DateTime? LastModifiedAt = null, DateTime? LastAccessedAt = null)
+    {
+        public IFile? CreatedFile { get; init; } = CreatedFile;
+
+        public DateTime? CreatedAt { get; set; } = CreatedAt;
+
+        public DateTime? LastModifiedAt { get; set; } = LastModifiedAt;
+
+        public DateTime? LastAccessedAt { get; set; } = LastAccessedAt;
+    }
 
     [TestMethod]
     public async Task DeleteAsyncTest()
@@ -65,7 +76,7 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
 
         // Delete the first item
         await folder.DeleteAsync(firstItem);
-        
+
         // Retrieve the first item again
         var newFirstItem = await folder.GetItemsAsync().FirstOrDefaultAsync(x => x.Id == firstItem.Id);
 
@@ -162,7 +173,7 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
 
         // The folder should still contain the unique content.
         Assert.AreEqual(1, folderContents.Count, $"If {nameof(IModifiableFolder)}.{nameof(IModifiableFolder.CreateFolderAsync)} is called but the name is already in use, then when overwrite is true the created folder should be empty.");
-        
+
         // Make sure the unique content is still in the folder.
         Assert.IsTrue(folderContents.Any(x => x.Id == uniqueContent.Id), $"If {nameof(IModifiableFolder)}.{nameof(IModifiableFolder.CreateFolderAsync)} is called but the name is already in use, then when overwrite is true the created folder should contain no previous content.");
     }
@@ -179,10 +190,10 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
         // If the item existed beforehand and we chose not to overwrite it, the "create" operation turns into an "open" operation.
         // Create an original item to check against created items, to determine if an overwrite happened.
         var childFolder = await sourceFolder.CreateFolderAsync("name");
-        
+
         // Create unique content that should remain unaffected.
         var uniqueContent = await ((IModifiableFolder)childFolder).CreateFolderAsync($"{Guid.NewGuid()}");
-        
+
         // Recreate childFolder, overwriting it.
         var createdOrOpenedFolder = await sourceFolder.CreateFolderAsync(childFolder.Name, overwrite: true);
         var folderContents = await createdOrOpenedFolder.GetFoldersAsync().ToListAsync();
