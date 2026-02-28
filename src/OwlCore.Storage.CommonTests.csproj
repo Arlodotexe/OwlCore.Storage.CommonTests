@@ -14,13 +14,65 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.6.0</Version>
+		<Version>0.6.1</Version>
 		<Product>OwlCore</Product>
 		<Description></Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.6.1 ---
+[Breaking]
+CommonIModifiableFolderTests: CreateFileInFolderWithTimestampsAsync now returns CreateFileInFolderWithTimestampsResult instead of IFile?. Update abstract method implementations accordingly. CopyMovePropertyPreservation and CrossImplementationCopyMove updated to use the new return type.
+
+[New]
+Add virtual member for property watcher test timeout in CommonIModifiableFolderTests.
+
+Add CommonIModifiableFolderTests.TimestampIsolation: four new tests asserting that setting one timestamp property (LastModifiedAt, LastAccessedAt, CreatedAt) does not silently update the others as a side effect. Motivated by Linux platform behavior: .NET's FileInfo setters call utimensat(2) without UTIME_OMIT, so setting LastAccessedAt also writes back the cached mtime and vice versa; additionally, on Linux SetCreationTime has no native creation-time syscall and routes through SetLastWriteTime, overwriting mtime as a side effect.
+
+CommonIModifiableFolderTests.ImplicitTimestampUpdates: add OpenFileWrite_UpdatesLastAccessedAt_AtOpenTime test asserting that atime is updated when the file is opened (not when the stream is closed). Promote AreTimestampsEqual helper from private to protected for use across partials.
+
+CommonIModifiableFolderTests: add LastAccessedAtUpdateBehavior property alongside LastModifiedAtUpdateBehavior.
+
+Add PolySharp package reference for polyfill support.
+
+--- 0.6.0 ---
+[Breaking]
+CommonIModifiableFolderTests, CommonIFileTests, and CommonIFolderTests are now declared as partial classes.
+
+CommonIFileTests: added three new abstract factory methods — CreateFileWithCreatedAtAsync, CreateFileWithLastModifiedAtAsync, and CreateFileWithLastAccessedAtAsync. Return null to signal that the implementation cannot seed that property.
+
+CommonIFolderTests: same pattern — added CreateFolderWithCreatedAtAsync, CreateFolderWithLastModifiedAtAsync, and CreateFolderWithLastAccessedAtAsync.
+
+CommonIModifiableFolderTests: added two new abstract factory methods — CreateFileInFolderWithLastModifiedAtAsync and CreateFileInFolderWithTimestampsAsync. Return null to opt out of tests that require pre-seeded timestamps.
+
+OwlCore.Extensions dependency bumped from 0.7.0 to 0.10.0. MSTest.TestFramework bumped from 3.2.2 to 3.7.3. Removed MSTest.TestAdapter and Microsoft.NET.Test.Sdk from package dependencies (consumers supply these).
+
+[New]
+Updated to OwlCore.Storage 0.15.0 for datetime storage property support.
+
+Added PropertyValueAvailability enum (Always, Maybe, Never) to describe whether a timestamp property is expected to return a value for a given implementation.
+
+Added PropertyUpdateBehavior enum (Immediate, Eventual, Never) to describe when a timestamp property is expected to reflect changes after a triggering operation.
+
+CommonIFileTests and CommonIFolderTests: added virtual properties CreatedAtAvailability, LastModifiedAtAvailability, LastAccessedAtAvailability, CreatedAtUpdateBehavior, LastModifiedAtUpdateBehavior, and LastAccessedAtUpdateBehavior. All default to Always / Immediate; override to loosen assertions for cloud or immutable backends. Timestamp partial files (CreatedAt, LastModifiedAt, LastAccessedAt, and their Offset variants) now use these properties to gate and adjust assertions.
+
+Added CommonIModifiableFolderTests.FilePropertyPersistence: tests that calling UpdateValueAsync on ICreatedAt, ILastModifiedAt, and ILastAccessedAt (and their Offset variants) for a file round-trips the value correctly.
+
+Added CommonIModifiableFolderTests.FolderPropertyPersistence: same as above for folders.
+
+Added CommonIModifiableFolderTests.ImplicitTimestampUpdates: tests that storage operations implicitly update the expected timestamp — OpenFileRead_UpdatesLastAccessedAt, OpenFileWrite_UpdatesLastAccessedAt, WriteFile_UpdatesLastModifiedAt, FolderIteration_UpdatesLastAccessedAt, CreateFileInFolder_UpdatesFolderLastModifiedAt, CreateFolderInFolder_UpdatesFolderLastModifiedAt, DeleteFileFromFolder_UpdatesFolderLastModifiedAt, and DeleteFolderFromFolder_UpdatesFolderLastModifiedAt.
+
+Added CommonIModifiableFolderTests.CopyMovePropertyPreservation: tests that CreateCopyOfAsync does not preserve CreatedAt or LastAccessedAt (new file gets current time) but does preserve LastModifiedAt, and that MoveFromAsync preserves all three timestamps.
+
+Added CommonIModifiableFolderTests.CrossImplementationCopyMove: tests copy/move between a real implementation and a mock (and vice versa), confirming timestamp semantics hold regardless of which side supplies or receives the file.
+
+Added CommonIModifiableFolderTests.PropertyWatcher: tests for IPropertyWatcher — GetWatcherAsync_ReturnsNonNullWatcher, ValueUpdated_FiresOnPropertyUpdate, ValueUpdated_FiresOnContentChange, Dispose_StopsEvents, DisposeAsync_StopsEvents, MultipleWatchers_AllReceiveEvents, CrossInstance_Notification, DisposeOne_OthersStillWork, CreatedAt_ValueUpdated_Fires, and LastAccessedAt_ValueUpdated_Fires.
+
+Added MockStorageFile, MockStorageFolder, and MockModifiableProperty — in-memory mock implementations used by CrossImplementationCopyMove tests and available to consumers for the same purpose.
+
+Added AssertEx with ThrowsException{T} and ThrowsExceptionAsync{T} helpers that accept any base type T, catching derived exception types rather than requiring an exact match (unlike the built-in MSTest Assert.ThrowsException).
+
 --- 0.5.2 ---
 [Fix]
 Fixed an issue where Assert.ThrowsException explicitly checks for an OperationCanceledException, not the exceptions that derive from it. Some libraries throw a TaskCanceledException instead of an OperationCanceledException, which may cause issues with tests.
