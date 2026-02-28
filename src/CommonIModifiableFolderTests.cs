@@ -56,6 +56,12 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
     /// </remarks>
     public abstract Task<CommonIModifiableFolderTests.CreateFileInFolderWithTimestampsResult?> CreateFileInFolderWithTimestampsAsync(IModifiableFolder folder, DateTime? createdAt, DateTime? lastModifiedAt, DateTime? lastAccessedAt);
 
+    /// <summary>
+    /// The timeout in milliseconds to wait for a property watcher event before failing.
+    /// Override in implementations where the underlying notification system has higher latency.
+    /// </summary>
+    public virtual int PropertyWatcherTimeoutMs => 3000;
+
     public record CreateFileInFolderWithTimestampsResult(IFile? CreatedFile, DateTime? CreatedAt = null, DateTime? LastModifiedAt = null, DateTime? LastAccessedAt = null)
     {
         public IFile? CreatedFile { get; init; } = CreatedFile;

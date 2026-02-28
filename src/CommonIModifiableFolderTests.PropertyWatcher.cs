@@ -81,7 +81,7 @@ public abstract partial class CommonIModifiableFolderTests
             await modifiableProp.UpdateValueAsync(newTime, CancellationToken.None);
 
             // Wait for event or timeout
-            var timeoutTask = Task.Delay(3000);
+            var timeoutTask = Task.Delay(PropertyWatcherTimeoutMs);
             var completedTask = await Task.WhenAny(eventFired.Task, timeoutTask);
 
             Assert.IsTrue(eventFired.Task.IsCompleted, "ValueUpdated should fire when property is updated");
@@ -137,7 +137,7 @@ public abstract partial class CommonIModifiableFolderTests
             stream.Dispose();
 
             // Wait for event or timeout
-            var timeoutTask = Task.Delay(3000);
+            var timeoutTask = Task.Delay(PropertyWatcherTimeoutMs);
             var completedTask = await Task.WhenAny(eventFired.Task, timeoutTask);
 
             Assert.IsTrue(eventFired.Task.IsCompleted, "ValueUpdated should fire when file content changes");
@@ -230,7 +230,7 @@ public abstract partial class CommonIModifiableFolderTests
             await modifiableProp.UpdateValueAsync(newTime, CancellationToken.None);
 
             // Wait for both events
-            var timeoutTask = Task.Delay(3000);
+            var timeoutTask = Task.Delay(PropertyWatcherTimeoutMs);
             await Task.WhenAny(Task.WhenAll(event1Fired.Task, event2Fired.Task), timeoutTask);
 
             Assert.IsTrue(event1Fired.Task.IsCompleted, "First watcher should receive ValueUpdated");
@@ -279,7 +279,7 @@ public abstract partial class CommonIModifiableFolderTests
             await modifiableProp2.UpdateValueAsync(newTime, CancellationToken.None);
 
             // Wait for event on instance 1
-            var timeoutTask = Task.Delay(3000);
+            var timeoutTask = Task.Delay(PropertyWatcherTimeoutMs);
             await Task.WhenAny(eventFired.Task, timeoutTask);
 
             Assert.IsTrue(eventFired.Task.IsCompleted, "Watcher on separate instance should receive ValueUpdated");
@@ -329,7 +329,7 @@ public abstract partial class CommonIModifiableFolderTests
             await modifiableProp.UpdateValueAsync(newTime, CancellationToken.None);
 
             // Wait for event
-            var timeoutTask = Task.Delay(3000);
+            var timeoutTask = Task.Delay(PropertyWatcherTimeoutMs);
             await Task.WhenAny(event2Fired.Task, timeoutTask);
 
             Assert.AreEqual(0, event1Count, "Disposed watcher should not receive events");
@@ -405,7 +405,7 @@ public abstract partial class CommonIModifiableFolderTests
             var newTime = DateTime.UtcNow.AddDays(-30);
             await modifiableProp.UpdateValueAsync(newTime, CancellationToken.None);
 
-            var timeoutTask = Task.Delay(3000);
+            var timeoutTask = Task.Delay(PropertyWatcherTimeoutMs);
             await Task.WhenAny(eventFired.Task, timeoutTask);
 
             Assert.IsTrue(eventFired.Task.IsCompleted, "CreatedAt watcher should fire ValueUpdated on change");
@@ -444,7 +444,7 @@ public abstract partial class CommonIModifiableFolderTests
             var newTime = DateTime.UtcNow.AddDays(-7);
             await modifiableProp.UpdateValueAsync(newTime, CancellationToken.None);
 
-            var timeoutTask = Task.Delay(3000);
+            var timeoutTask = Task.Delay(PropertyWatcherTimeoutMs);
             await Task.WhenAny(eventFired.Task, timeoutTask);
 
             Assert.IsTrue(eventFired.Task.IsCompleted, "LastAccessedAt watcher should fire ValueUpdated on change");
