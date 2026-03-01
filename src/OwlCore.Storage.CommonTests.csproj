@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<LangVersion>10.0</LangVersion>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
@@ -25,6 +25,10 @@
 --- 0.6.1 ---
 [Breaking]
 CommonIModifiableFolderTests: CreateFileInFolderWithTimestampsAsync now returns CreateFileInFolderWithTimestampsResult instead of IFile?. Update abstract method implementations accordingly. CopyMovePropertyPreservation and CrossImplementationCopyMove updated to use the new return type.
+
+[Improvements]
+Added net8.0 and net9.0 as target frameworks. System.Linq.Async and Microsoft.Bcl.AsyncInterfaces are now conditioned to exclude net10.0+, where these APIs are built into the runtime.
+Updated OwlCore.Extensions to 0.11.0.
 
 [New]
 Add virtual member for property watcher test timeout in CommonIModifiableFolderTests.
@@ -172,17 +176,17 @@ Initial release of OwlCore.Storage.CommonTests.
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="OwlCore.Extensions" Version="0.10.0" />
-		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
+		<PackageReference Include="OwlCore.Extensions" Version="0.11.0" />
+		<PackageReference Include="System.Linq.Async" Version="6.0.1" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))" />
 
 		<PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
 		<PackageReference Include="OwlCore.Storage" Version="0.15.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="logo.png">
+		<None Include="logo.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
