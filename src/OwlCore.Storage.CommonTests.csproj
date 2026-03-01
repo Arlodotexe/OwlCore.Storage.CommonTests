@@ -14,7 +14,7 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
 		<Author>Arlo Godfrey</Author>
-		<Version>0.6.1</Version>
+		<Version>0.6.2</Version>
 		<Product>OwlCore</Product>
 		<Description>Common tests that should pass for all implementations of OwlCore.Storage.</Description>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -22,6 +22,12 @@
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/Arlodotexe/OwlCore.Storage.CommonTests</PackageProjectUrl>
 		<PackageReleaseNotes>
+--- 0.6.2 ---
+[Improvements]
+Updated Microsoft.Bcl.AsyncInterfaces to 10.0.3.
+Updated System.Linq.Async to 7.0.0. Removed the net10.0 exclusion condition - the LINQ async operators are not built into the runtime and must be referenced on all TFMs.
+Updated OwlCore.Extensions to 0.11.1.
+
 --- 0.6.1 ---
 [Breaking]
 CommonIModifiableFolderTests: CreateFileInFolderWithTimestampsAsync now returns CreateFileInFolderWithTimestampsResult instead of IFile?. Update abstract method implementations accordingly. CopyMovePropertyPreservation and CrossImplementationCopyMove updated to use the new return type.
@@ -176,10 +182,10 @@ Initial release of OwlCore.Storage.CommonTests.
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.3" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="OwlCore.Extensions" Version="0.11.0" />
-		<PackageReference Include="System.Linq.Async" Version="6.0.1" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))" />
+		<PackageReference Include="OwlCore.Extensions" Version="0.11.1" />
+		<PackageReference Include="System.Linq.Async" Version="7.0.0" />
 
 		<PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
 		<PackageReference Include="OwlCore.Storage" Version="0.15.0" />
