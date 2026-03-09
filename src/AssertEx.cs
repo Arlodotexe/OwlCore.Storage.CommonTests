@@ -18,7 +18,7 @@ public static class AssertEx
     /// <param name="message">The message to include in the exception when the assertion fails.</param>
     /// <returns>The exception that was thrown.</returns>
     /// <exception cref="AssertFailedException">Thrown if no exception or an incompatible exception type is thrown.</exception>
-    public static async Task<T> ThrowsExceptionAsync<T>(Func<Task> action, string? message = null) where T : Exception
+    public static async Task<T> ThrowsAsync<T>(Func<Task> action, string? message = null) where T : Exception
     {
         try
         {
@@ -33,13 +33,13 @@ public static class AssertEx
         {
             var msg = message != null
                 ? $"{message} Expected exception type: <{typeof(T).FullName}>. Actual exception type: <{ex.GetType().FullName}>."
-                : $"Assert.ThrowsException failed. Expected exception type: <{typeof(T).FullName}>. Actual exception type: <{ex.GetType().FullName}>.";
+                : $"Assert.Throws failed. Expected exception type: <{typeof(T).FullName}>. Actual exception type: <{ex.GetType().FullName}>.";
             throw new AssertFailedException(msg, ex);
         }
 
         var noExMsg = message != null
             ? $"{message} Expected exception type: <{typeof(T).FullName}> but no exception was thrown."
-            : $"Assert.ThrowsException failed. Expected exception type: <{typeof(T).FullName}> but no exception was thrown.";
+            : $"Assert.Throws failed. Expected exception type: <{typeof(T).FullName}> but no exception was thrown.";
         throw new AssertFailedException(noExMsg);
     }
 
@@ -52,7 +52,7 @@ public static class AssertEx
     /// <param name="message">The message to include in the exception when the assertion fails.</param>
     /// <returns>The exception that was thrown.</returns>
     /// <exception cref="AssertFailedException">Thrown if no exception or an incompatible exception type is thrown.</exception>
-    public static T ThrowsException<T>(Action action, string? message = null) where T : Exception
+    public static T Throws<T>(Action action, string? message = null) where T : Exception
     {
         try
         {
@@ -67,13 +67,13 @@ public static class AssertEx
         {
             var msg = message != null
                 ? $"{message} Expected exception type: <{typeof(T).FullName}>. Actual exception type: <{ex.GetType().FullName}>."
-                : $"Assert.ThrowsException failed. Expected exception type: <{typeof(T).FullName}>. Actual exception type: <{ex.GetType().FullName}>.";
+                : $"Assert.Throws failed. Expected exception type: <{typeof(T).FullName}>. Actual exception type: <{ex.GetType().FullName}>.";
             throw new AssertFailedException(msg, ex);
         }
 
         var noExMsg = message != null
             ? $"{message} Expected exception type: <{typeof(T).FullName}> but no exception was thrown."
-            : $"Assert.ThrowsException failed. Expected exception type: <{typeof(T).FullName}> but no exception was thrown.";
+            : $"Assert.Throws failed. Expected exception type: <{typeof(T).FullName}> but no exception was thrown.";
         throw new AssertFailedException(noExMsg);
     }
 }

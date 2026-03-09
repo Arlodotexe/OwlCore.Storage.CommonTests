@@ -74,7 +74,7 @@ public abstract partial class CommonIFileTests
         var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        Assert.ThrowsException<OperationCanceledException>(() =>
+        Assert.Throws<OperationCanceledException>(() =>
             createdAt.CreatedAt.GetValueAsync(cts.Token));
     }
 

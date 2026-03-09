@@ -74,7 +74,7 @@ public abstract partial class CommonIFolderTests
         var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        Assert.ThrowsException<OperationCanceledException>(() =>
+        Assert.Throws<OperationCanceledException>(() =>
             lastAccessedAt.LastAccessedAt.GetValueAsync(cts.Token));
     }
 

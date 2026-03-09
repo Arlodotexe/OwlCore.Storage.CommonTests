@@ -14,6 +14,12 @@ public abstract partial class CommonIFileTests
     public virtual bool SupportsWriting => true;
 
     /// <summary>
+    /// The timeout in milliseconds to wait for a property watcher event before failing.
+    /// Override in implementations where the underlying notification system has higher latency.
+    /// </summary>
+    public virtual int PropertyWatcherTimeoutMs => 3000;
+
+    /// <summary>
     /// Gets the expected availability of the CreatedAt property value.
     /// </summary>
     public virtual PropertyValueAvailability CreatedAtAvailability => PropertyValueAvailability.Always;
@@ -104,7 +110,7 @@ public abstract partial class CommonIFileTests
 
         if (accessMode == 0)
         {
-            await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => file.OpenStreamAsync(accessMode));
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => file.OpenStreamAsync(accessMode));
             return;
         }
 
@@ -142,7 +148,7 @@ public abstract partial class CommonIFileTests
 
         if (accessMode == 0)
         {
-            var task = Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => file.OpenStreamAsync(accessMode, cancellationTokenSource.Token));
+            var task = Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => file.OpenStreamAsync(accessMode, cancellationTokenSource.Token));
             cancellationTokenSource.Cancel();
 
             await task;
@@ -151,7 +157,7 @@ public abstract partial class CommonIFileTests
 
         cancellationTokenSource.Cancel();
 
-        await AssertEx.ThrowsExceptionAsync<OperationCanceledException>(async () =>
+        await AssertEx.ThrowsAsync<OperationCanceledException>(async () =>
         {
             try
             {

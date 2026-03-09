@@ -141,7 +141,7 @@ public abstract partial class CommonIFolderTests
 
         if (type == StorableType.None)
         {
-            await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(async () =>
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
             {
                 await foreach (var _ in file.GetItemsAsync(type)) { }
             });
@@ -180,7 +180,7 @@ public abstract partial class CommonIFolderTests
 
         var folder = await CreateFolderAsync();
 
-        await AssertEx.ThrowsExceptionAsync<OperationCanceledException>(async () => await folder.GetItemsAsync(type, cancellationTokenSource.Token).ToListAsync(cancellationToken: cancellationTokenSource.Token), "Does not cancel immediately if a canceled token is passed.");
+        await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await folder.GetItemsAsync(type, cancellationTokenSource.Token).ToListAsync(cancellationToken: cancellationTokenSource.Token), "Does not cancel immediately if a canceled token is passed.");
     }
 
     [TestMethod]
@@ -205,7 +205,7 @@ public abstract partial class CommonIFolderTests
         var cancellationTokenSource = new CancellationTokenSource();
         var folder = await CreateFolderWithItems(fileCount, folderCount);
 
-        await AssertEx.ThrowsExceptionAsync<OperationCanceledException>(async () =>
+        await AssertEx.ThrowsAsync<OperationCanceledException>(async () =>
         {
             var index = 0;
             await foreach (var item in folder.GetItemsAsync(type, cancellationTokenSource.Token))

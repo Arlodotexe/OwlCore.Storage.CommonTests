@@ -119,7 +119,7 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
         CollectionAssert.AreEqual(randomBytesAddedToOriginalFile, copiedBytes);
 
         // If the file already exists, and we chose not to overwrite it, a "FileAlreadyExistsException" should throw.
-        await Assert.ThrowsExceptionAsync<FileAlreadyExistsException>(async () => await destinationFolder.CreateCopyOfAsync(copy, overwrite: false), $"If an item of the same name already exists in the destination folder, {nameof(FileAlreadyExistsException)} should be thrown. Check the {sourceFolder.GetType()} implementation of {nameof(ICreateCopyOf)}.{nameof(ICreateCopyOf.CreateCopyOfAsync)}.");
+        await Assert.ThrowsAsync<FileAlreadyExistsException>(async () => await destinationFolder.CreateCopyOfAsync(copy, overwrite: false), $"If an item of the same name already exists in the destination folder, {nameof(FileAlreadyExistsException)} should be thrown. Check the {sourceFolder.GetType()} implementation of {nameof(ICreateCopyOf)}.{nameof(ICreateCopyOf.CreateCopyOfAsync)}.");
     }
 
     [TestMethod]
@@ -141,13 +141,12 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
         CollectionAssert.AreEqual(randomBytesAddedToOriginalFile, copiedBytes);
 
         // If the file already exists, and we chose not to overwrite it, a "FileAlreadyExistsException" should throw.
-        await Assert.ThrowsExceptionAsync<FileAlreadyExistsException>(async () => await destinationFolder.MoveFromAsync(copy, sourceFolder, overwrite: false), $"If an item of the same name already exists in the destination folder, {nameof(FileAlreadyExistsException)} should be thrown. Check the {sourceFolder.GetType()} implementation of {nameof(IMoveFrom)}.{nameof(IMoveFrom.MoveFromAsync)}.");
+        await Assert.ThrowsAsync<FileAlreadyExistsException>(async () => await destinationFolder.MoveFromAsync(copy, sourceFolder, overwrite: false), $"If an item of the same name already exists in the destination folder, {nameof(FileAlreadyExistsException)} should be thrown. Check the {sourceFolder.GetType()} implementation of {nameof(IMoveFrom)}.{nameof(IMoveFrom.MoveFromAsync)}.");
     }
 
     [DataRow(0, 0)]
     [DataRow(1, 1)]
     [DataRow(0, 1)]
-    [DataRow(1, 1)]
     [TestMethod]
     public async Task CreateNewFolderAsyncTest_FolderWithItems_NameNotExists(int fileCount, int folderCount)
     {
@@ -227,7 +226,6 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
     [DataRow(0, 0)]
     [DataRow(1, 1)]
     [DataRow(0, 1)]
-    [DataRow(1, 1)]
     [TestMethod]
     public async Task CreateNewFileAsyncTest_FolderWithItems_NameExists_NoOverwrite(int fileCount, int folderCount)
     {
@@ -251,7 +249,6 @@ public abstract partial class CommonIModifiableFolderTests : CommonIFolderTests
     [DataRow(0, 0)]
     [DataRow(1, 1)]
     [DataRow(0, 1)]
-    [DataRow(1, 1)]
     [TestMethod]
     public async Task CreateNewFileAsyncTest_FolderWithItems_NameExists_Overwrite(int fileCount, int folderCount)
     {
